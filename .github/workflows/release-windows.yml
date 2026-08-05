@@ -20,17 +20,14 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        working-directory: ./blueprint-quote-buddy-v3
         run: npm install
 
       - name: Read version
-        working-directory: ./blueprint-quote-buddy-v3
         id: v
         shell: bash
         run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 
       - name: Build Electron app & Upload to Supabase
-        working-directory: ./blueprint-quote-buddy-v3
         shell: bash
         env:
           RELEASE_UPLOAD_TOKEN: ${{ secrets.RELEASE_UPLOAD_TOKEN }}
