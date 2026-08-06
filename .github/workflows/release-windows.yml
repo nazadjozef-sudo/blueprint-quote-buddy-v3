@@ -12,6 +12,14 @@ concurrency:
 jobs:
   release:
     runs-on: windows-latest
+    
+    # -------------------------------------------------------------
+    # TOTO JE KĽÚČOVÝ RIADOK, KTORÝ VYRIEŠI CHYBU SO ZDVOJENOU CESTOU:
+    # -------------------------------------------------------------
+    defaults:
+      run:
+        working-directory: ./blueprint-quote-buddy-v3
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -34,11 +42,6 @@ jobs:
         env:
           RELEASE_UPLOAD_TOKEN: ${{ secrets.RELEASE_UPLOAD_TOKEN }}
         run: |
-          # 1. Spustíme kompletný build pre Electron (Vite + esbuild pre updater)
           npm run electron:build
-          
-          # 2. Zabalíme Electron aplikáciu pomocou tvojho electron-builder.yml
           npx electron-builder --win --config electron-builder.yml --publish never
-          
-          # 3. Nahrajeme výstup do Supabase
-          node scripts/upload-release.mjs
+          node scripts/upload-release.mjs  
