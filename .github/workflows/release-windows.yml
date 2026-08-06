@@ -13,9 +13,11 @@ jobs:
   release:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
 
@@ -32,6 +34,11 @@ jobs:
         env:
           RELEASE_UPLOAD_TOKEN: ${{ secrets.RELEASE_UPLOAD_TOKEN }}
         run: |
-          npm run build
-          npx electron-builder --win --config.publish.provider=generic --config.publish.url="https://dummy.url"
+          # 1. Spustíme kompletný build pre Electron (Vite + esbuild pre updater)
+          npm run electron:build
+          
+          # 2. Zabalíme Electron aplikáciu pomocou tvojho electron-builder.yml
+          npx electron-builder --win --config electron-builder.yml --publish never
+          
+          # 3. Nahrajeme výstup do Supabase
           node scripts/upload-release.mjs
